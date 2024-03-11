@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, useMemo, memo, useCallback} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons/faCircleExclamation';
 import {faChevronLeft} from '@fortawesome/free-solid-svg-icons/faChevronLeft';
@@ -11,8 +11,9 @@ import {
   StyleSheet,
   Text,
   useColorScheme,
-  View as ViewRN,
+  View,
   TextInput,
+  Button,
 } from 'react-native';
 
 import {
@@ -24,120 +25,108 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 function App() {
-  return (
-    <View bgColor="#f5f5dc">
-      <HeaderCustome />
-      <InputCustome title="Tên" placeholder="Nhập Tên" />
-      <InputCustome title="Email" placeholder="Nhập Email" />
-      <InputCustome title="Địa chỉ" placeholder="Nhập Địa Chỉ" />
-      <InputCustomeErr title="Địa chỉ" placeholder="Nhập Địa Chỉ" />
-      <SectionCustome title={'Tên Sự Kiện'} name={'Việt Nam Vs Thái Lan'} />
-      <SectionCustome title={'Ngày Diễn Ra'} name={'20/10/2023'} />
-      <SectionCustome title={'Địa Điểm'} name={'Sân Mỹ Đình'} />
-    </View>
-  );
-}
+  let [textname, setname] = useState('');
+  let [textprice, setprice] = useState('');
 
-function SectionCustome({title, name}) {
-  return (
-    <View pad={10}>
-      <Text>{title}</Text>
-      <Text
-        style={{
-          fontWeight: 'bold',
-          fontSize: 16,
-        }}>
-        {name}
+  let [count, setCount] = useState(0);
+
+  let [listProduct, setListProduct] = useState([
+    {
+      name: 'Iphone',
+      price: 120000,
+    },
+  ]);
+  let data = listProduct.map((item, index) => {
+    return (
+      <Text key={index} style={{fontSize: 16, marginLeft: 5}}>
+        {item.name} : {item.price}
       </Text>
+    );
+  });
+  function handleSubmit() {
+    let obj = {name: textname, price: textprice};
+    setListProduct([...listProduct, obj]);
+  }
+
+  // function handleCount() {
+  //   setCount(count + 1);
+  // }
+
+  const handleCount = useCallback(() => {
+    setCount(count + 1);
+  }, []);
+
+  function ftotal(listProductp) {
+    console.log('ftotal');
+    let total = 0;
+
+    listProductp.forEach(element => {
+      total = total + parseInt(element.price);
+    });
+
+    return total;
+  }
+
+  let total = useMemo(() => ftotal(listProduct), [listProduct]);
+
+  useEffect(() => {
+    console.log('useEffect');
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => console.log(json));
+  }, []);
+
+  console.log('APP');
+  return (
+    <View>
+      <Content handleCount={handleCount} />
+      <Text style={{fontSize: 30, marginLeft: '20%'}}>
+        LIST TODO Count: {count}
+      </Text>
+
+      <Text style={{fontSize: 16, marginLeft: 5}}>Name</Text>
+      <TextInput
+        onChangeText={setname}
+        style={{
+          height: 40,
+          margin: 12,
+          borderWidth: 1,
+          padding: 10,
+        }}></TextInput>
+      <Text style={{fontSize: 16, marginLeft: 5}}>Price</Text>
+      <TextInput
+        onChangeText={setprice}
+        style={{
+          height: 40,
+          margin: 12,
+          borderWidth: 1,
+          padding: 10,
+        }}></TextInput>
+      <Button
+        onPress={handleSubmit}
+        style={{width: 20}}
+        title="ADD TODOD"
+        color="#841584"
+      />
+      <Text style={{fontSize: 20}}>Total: {total}</Text>
+      {data}
     </View>
   );
 }
 
-function View({children, pad, bgColor}) {
+const Content = memo(function Content({handleCount}) {
+  console.log('Render Content');
   return (
-    <ViewRN
-      style={{
-        padding: pad ? pad : 30,
-        backgroundColor: bgColor ? bgColor : '#f0ffff',
-      }}>
-      {children}
-    </ViewRN>
+    <View>
+      <Text>Hello Content</Text>
+      <Button
+        onPress={handleCount}
+        style={{width: 20}}
+        title="Count"
+        color="#841584"
+      />
+    </View>
   );
-}
-function InputCustome({title, placeholder}) {
-  return (
-    <ViewRN>
-      <Text style={style.text}>{title} *</Text>
-      <TextInput placeholder={placeholder} style={style.input} />
-    </ViewRN>
-  );
-}
-
-function HeaderCustome() {
-  return (
-    <ViewRN style={headerStyle.view}>
-      <FontAwesomeIcon style={headerStyle.icon} icon={faChevronLeft} />
-      <Text>Home</Text>
-      <FontAwesomeIcon style={headerStyle.icon} icon={faBars} />
-    </ViewRN>
-  );
-}
-
-function InputCustomeErr({title, placeholder}) {
-  return (
-    <ViewRN>
-      <Text style={style.text}>{title} *</Text>
-      <ViewRN style={style.view}>
-        <TextInput
-          placeholder={placeholder}
-          style={{...style.input, ...style.inputErr}}
-        />
-        <FontAwesomeIcon style={style.icon} icon={faCircleExclamation} />
-      </ViewRN>
-      <Text style={style.textErr}>errors</Text>
-    </ViewRN>
-  );
-}
-
-const headerStyle = {
-  view: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    height: 50,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-  },
-  icon: {},
-  text: {},
-};
-const style = {
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: '90%',
-  },
-  inputErr: {
-    borderColor: 'red',
-  },
-
-  text: {
-    paddingLeft: 10,
-    paddingTop: 10,
-  },
-  textErr: {
-    paddingLeft: 10,
-    color: 'red',
-  },
-  icon: {
-    color: 'red',
-    paddingTop: 65,
-    marginLeft: -35,
-  },
-  view: {
-    flexDirection: 'row',
-  },
-};
+});
 
 export default App;
