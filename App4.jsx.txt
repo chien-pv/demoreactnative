@@ -1,0 +1,154 @@
+import React, {useEffect} from 'react';
+
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withRepeat,
+  withSpring,
+} from 'react-native-reanimated';
+import {
+  SafeAreaView,
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  StatusBar,
+} from 'react-native';
+
+const DATA = [
+  {
+    id: '33434-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '4343343-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '8787-3da1-471f-bd96-145571e23d72',
+    title: 'Third Item',
+  },
+  {
+    id: '454545-3da1-471f-bd96-145571e25d72',
+    title: 'Third Item',
+  },
+  {
+    id: '98989-3da1-471f-bd96-145571e79d72',
+    title: 'Third Item',
+  },
+  {
+    id: '1212-3da1-471f-bd96-145571e39d72',
+    title: 'Third Item',
+  },
+  {
+    id: '080909-3da1-471f-bd96-345571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '58694a0f-67676-371f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '58694a0f-3da1-67676-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '58694a0f-3da1-441f-67676-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '58694a0f-3da1-4716-3232-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '58694a0f-34343-471f-7d96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '67676-3da1-471f-557575-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '33333-3da1-471f-7676-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '545454-3da1-67676-7d96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '4345443-3da1-471f-32232-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '4343434-0909-471f-7d96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: '454545-3da1-471f-7d96-35354545',
+    title: 'Third Item',
+  },
+  {
+    id: '233232-3da1-65656-7d96-145571e29d72',
+    title: 'Third Item',
+  },
+];
+
+const Item = ({title, sv, item}) => {
+  let animatedStyle = useAnimatedStyle(() => {
+    console.log(sv.value);
+    let isInvisible = sv.value
+      .filter(item => item.isViewable)
+      .find(itemViewable => itemViewable.item.id === item.id);
+    return {
+      opacity: withTiming(isInvisible ? 1 : 0, {duration: 2000}),
+      transform: [
+        {
+          scale: withTiming(isInvisible ? 1 : 0.5, {duration: 2000}),
+        },
+      ],
+    };
+  }, []);
+
+  return (
+    <Animated.View style={[styles.item, animatedStyle]}>
+      <Text style={styles.title}>{title}</Text>
+    </Animated.View>
+  );
+};
+
+const App = () => {
+  let sv = useSharedValue([]);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={DATA}
+        onViewableItemsChanged={({viewableItems: vItems}) => {
+          sv.value = vItems;
+        }}
+        renderItem={({item}) => <Item sv={sv} title={item.title} item={item} />}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+  },
+});
+
+export default App;

@@ -1,10 +1,10 @@
 import {Text, Button, View} from 'react-native';
-import TodoContext from '../context';
-import {useContext} from 'react';
-
+import {useDispatch} from 'react-redux';
+import todoSlice from '../redux/todoSlice';
 function ItemTodo({item, index}) {
-  let {handleDelete} = useContext(TodoContext);
-
+  let {deleteTodo} = todoSlice.actions;
+  // console.log(todoSlice.actions.deleteTodo(1));
+  let dispatch = useDispatch();
   return (
     <View
       style={{
@@ -16,12 +16,12 @@ function ItemTodo({item, index}) {
         style={{
           padding: 7,
         }}>
-        {item}
+        {item.title}
       </Text>
       <Button title="Edit"></Button>
       <Button
         onPress={() => {
-          handleDelete(index);
+          dispatch(deleteTodo(index));
         }}
         title="Delete"></Button>
     </View>

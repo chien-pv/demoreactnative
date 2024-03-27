@@ -1,0 +1,27 @@
+import {Text, View, Button, Image} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
+import {useState} from 'react';
+
+function App() {
+  let [image, setImage] = useState(null);
+  async function handleOpenCamera() {
+    const result = await launchCamera();
+    console.log(result.assets[0].uri);
+    setImage(result.assets[0].uri);
+  }
+  async function handleOpenFile() {
+    const result = await launchImageLibrary();
+    console.log(result);
+  }
+  return (
+    <View>
+      <Text>Hello</Text>
+      {image && <Image source={{uri: image}} style={{width: 40, height: 40}} />}
+      <Button onPress={handleOpenCamera} title="Open Camera" />
+      <Button onPress={handleOpenFile} title="Open Image" />
+    </View>
+  );
+}
+
+export default App;

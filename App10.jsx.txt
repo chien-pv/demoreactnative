@@ -1,0 +1,42 @@
+import {Button, Image, Text, View} from 'react-native';
+import {useEffect, useState} from 'react';
+import TrackPlayer, {
+  AppKilledPlaybackBehavior,
+  Capability,
+  RepeatMode,
+  Event,
+  State,
+} from 'react-native-track-player';
+
+async function setup() {
+  await TrackPlayer.setupPlayer();
+  const track2 = {
+    url: require('./data/19thFloorBobbyRichards.mp3'), // Load media from the app bundle
+    title: 'Coelacanth I',
+    artist: 'deadmau5',
+    artwork: require('./data/download.jpeg'), // Load artwork from the app bundle
+    duration: 166,
+  };
+  await TrackPlayer.add([track2]);
+}
+function App() {
+  useEffect(() => {
+    setup();
+  }, []);
+  return (
+    <View>
+      <Text> Hello </Text>
+      <Button
+        title="Play"
+        onPress={async () => {
+          const state = await TrackPlayer.getState();
+          if (state === State.Playing) {
+            console.log('The player is playing');
+          }
+          TrackPlayer.play();
+        }}
+      />
+    </View>
+  );
+}
+export default App;

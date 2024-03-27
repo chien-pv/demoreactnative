@@ -1,0 +1,34 @@
+import {Text, View} from 'react-native';
+
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withRepeat,
+} from 'react-native-reanimated';
+function App() {
+  let sv = useSharedValue(100);
+  let animateStyle = useAnimatedStyle(() => {
+    return {transform: [{translateX: sv.value}]};
+  });
+
+  sv.value = withRepeat(withTiming(-sv.value, {duration: 1500}), -1, true);
+  return (
+    <View>
+      <Animated.View
+        style={[
+          {
+            width: 100,
+            height: 100,
+            marginLeft: 100,
+            backgroundColor: 'blue',
+          },
+          animateStyle,
+        ]}>
+        <Text>Hello</Text>
+      </Animated.View>
+    </View>
+  );
+}
+
+export default App;
