@@ -1,10 +1,14 @@
 import {Text, Button, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import todoSlice from '../redux/todoSlice';
+import {useGetAllAlbumQuery, useGetAlbumByIdQuery} from '../redux/actionRTK';
+
 function ItemTodo({item, index}) {
-  let {deleteTodo} = todoSlice.actions;
+  const {data, error, isLoading} = useGetAlbumByIdQuery(18);
+
+  // let {deleteTodo} = todoSlice.actions;
   // console.log(todoSlice.actions.deleteTodo(1));
-  let dispatch = useDispatch();
+  // let dispatch = useDispatch();
   return (
     <View
       style={{
@@ -16,14 +20,9 @@ function ItemTodo({item, index}) {
         style={{
           padding: 7,
         }}>
-        {item.title}
+        {data.title}
       </Text>
       <Button title="Edit"></Button>
-      <Button
-        onPress={() => {
-          dispatch(deleteTodo(index));
-        }}
-        title="Delete"></Button>
     </View>
   );
 }

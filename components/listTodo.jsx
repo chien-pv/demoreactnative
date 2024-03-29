@@ -5,23 +5,32 @@ import TodoContext from '../context';
 import {fetchListTodos} from '../redux/todoSlice';
 import {fetchDataTodo} from '../redux/thunkAction';
 import {useSelector, useDispatch} from 'react-redux';
+import {useGetAllAlbumQuery, useGetAlbumByIdQuery} from '../redux/actionRTK';
+import NetworkLogger from 'react-native-network-logger';
+
 function ListTodo() {
   let dispatch = useDispatch();
   // dispatch(fetchListTodo());
-  let datas = useSelector(state => state.todos);
-  let todos = datas.values;
+  // const {data, error, isLoading} = useGetAllAlbumQuery();
+  // const {data, error, isLoading} = useGetAlbumByIdQuery(18);
+  // console.log(data);
 
-  console.log(datas);
-  useEffect(() => {
-    dispatch(fetchListTodos());
-  }, []);
-  let data = todos.map((item, index) => {
-    return <ItemTodo key={index} item={item} index={index} />;
-  });
+  // let datas = useSelector(state => state.todos);
+  // let todos = datas.values;
+
+  // console.log(datas);
+  useEffect(() => {}, []);
+  // let ab = data.map((item, index) => {
+  //   return <ItemTodo key={index} item={item} index={index} />;
+  // });
   return (
     <View>
-      {datas.isLoading ? <Text>isLoading ... </Text> : ''}
-      {data}
+      <ItemTodo />
+      <ItemTodo />
+      <ItemTodo />
+      <ItemTodo />
+
+      <NetworkLogger />
     </View>
   );
 }
